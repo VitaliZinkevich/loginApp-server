@@ -3,7 +3,7 @@ var app = express();
 
 var bodyParser = require('body-parser');
 var session = require('express-session');
-// DELETE var ls = require('local-storage');
+var ls = require('local-storage');
 // DELETE var jsonfile = require('jsonfile')
 var cookie = require('cookie'); // what cookies are actuallu works here
 
@@ -46,7 +46,11 @@ const password = body.password;
  if ((username && password) && req.method === 'POST') {
    if (username === 'admin' && password === 'admin') {
 
-     res.cookie('isLoggedIn', 'true')
+     let cookiesId = req.cookies['connect.sid'];
+
+      res.cookie ('id', cookiesId.toString())
+      ls.set ('id', cookiesId.toString())
+
 
      res.send ({
      'success': true,
@@ -69,9 +73,13 @@ const password = body.password;
 
 app.get ('/database',function  (req, res) {
 
-       var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
 
-       if (req.cookies.isLoggedIn == 'true' )
+       var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
+       console.log (req.cookies['connect.sid'])
+       console.log (req.cookies.id)
+      console.log (req.cookies['connect.sid'] == req.cookies.id)
+
+       if (ls.get ('id') === req.cookies.id )
                   {res.send (obj)}
 
 
