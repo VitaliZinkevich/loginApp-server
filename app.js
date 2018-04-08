@@ -75,11 +75,9 @@ app.use(session({
   saveUninitialized: true,
 
 }))
-/*/
-app.get('/', function (req, res){
 
-})
-*/
+
+
 
 app.post ('/login', function (req, res) {
 
@@ -189,5 +187,16 @@ if (req.session.user) {
 } else {
   res.send ({status: false})
 }
+
+})
+
+app.get('/loggout', function (req, res){
+
+  req.session.destroy(function(err) {
+    // cannot access session here
+  })
+  
+res.send ({status:true})
+
 
 })
