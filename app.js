@@ -75,12 +75,11 @@ app.use(session({
   saveUninitialized: true,
 
 }))
-
+/*/
 app.get('/', function (req, res){
 
-  console.log (req.session.id)
 })
-
+*/
 
 app.post ('/login', function (req, res) {
 
@@ -92,24 +91,24 @@ const password = body.password;
    if (username === 'admin' && password === 'admin') {
 
     let options = {
-    maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+    maxAge: 1000 * 60 * 1, // would expire after 15 minutes
     httpOnly: true // The cookie only accessible by the web server
     //signed: true // Indicates if the cookie should be signed
 }
 
      let sessionId = req.session.id;
 
-     res.cookie ('sessionId', sessionId.toString(), options)
+     //res.cookie ('sessionId', sessionId.toString(), options)
       //ls.set ('id', cookiesId.toString())
-      console.log (req.session.id)
+      //console.log (req.session.id)
 
       req.session.user = 'admin'
 
-    store.set(sessionId, req.session, function (error) {
+  /*  store.set(sessionId, req.session, function (error) {
       if (error) {
         console.log (error)
       }
-    })
+    })*/
 
 
 
@@ -134,25 +133,30 @@ const password = body.password;
 
 app.get ('/database',function  (req, res) {
 
-  store.get(req.cookies.sessionId, function (error, session) {
+/*  store.get(req.cookies.sessionId, function (error, session) {
 
       if (error) {
-        console.log (error)
+        //console.log (error)
       } else {
+        /*
         console.log ('session FROM STORAGE ')
           console.log ( session )
+        */
+    /*  }
 
-      }
-
-  })
-
+  })*/
+/*
 console.log ('куки и сессия РАВЕНСТВО'+(req.session.id ==req.cookies.sessionId))
 console.log ('sessionId в куки '+req.cookies.sessionId)
-
+*/
        var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
+       var obj1 = {name: 'NOadmin', status: 'success', respond: 'message for not loggedIn'}
+
 if (req.session.user == 'admin' ){
 
   res.send (obj)
+} else {
+  res.send (obj1)
 }
 
 })
@@ -167,6 +171,23 @@ if (req.session.user == 'admin' ){
 
 app.get ('/isLoggedIn', function (req,res){
 
+  /*store.get(req.cookies.sessionId, function (error, session) {
 
+      if (error) {
+        console.log (error)
+      } else {
+        console.log ('session FROM STORAGE ')
+        console.log ( session )
+      }
+  })*/
+
+
+console.log (req.session.user)
+
+if (req.session.user) {
+  res.send ({status: true})
+} else {
+  res.send ({status: false})
+}
 
 })
