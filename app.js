@@ -195,8 +195,14 @@ app.get('/loggout', function (req, res){
   req.session.destroy(function(err) {
     // cannot access session here
   })
-  
-res.send ({status:true})
+
+res.send ({success:true})
 
 
+})
+
+app.post ('/register', function (req,res){
+
+  console.log (req.body)
+  res.send ({success: true})
 })
