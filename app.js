@@ -6,7 +6,7 @@ var session = require('express-session');
 
 var User = require ('./models/users')
 
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 mongoose.Promise = Promise
 mongoose.connect ('mongodb://localhost:27017/loginAppDb')
 .then ((err)=>{console.log ('Mongoose UP')})

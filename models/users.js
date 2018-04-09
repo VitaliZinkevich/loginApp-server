@@ -1,14 +1,10 @@
-const mongoose = require('mongoose');
-
-
-
-
+var mongoose = require('mongoose');
 
 const UserShema = new mongoose.Schema({
 
   email: String,
   password: String,
-  quote: {type: String, default: "GOT NOT QUOTE"} 
+  quote: {type: String, default: "GOT NOT QUOTE"}
 /*
  name: String,
  email:String,
@@ -17,7 +13,7 @@ const UserShema = new mongoose.Schema({
  */
 });
 
-const User = moongoose.model('User', UserShema)
+const User = mongoose.model('User', UserShema)
 
 
 module.export = User
