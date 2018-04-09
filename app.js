@@ -89,20 +89,50 @@ app.use(session({
 
 
 
-app.post ('/login', async function (req, res) {
+app.post ('/login', async  (req, res) => {
 
 
-const {username, password} = req.body
+const {email, password} = req.body
+console.log (email, password)
 
-const dbFindUser = await User.findOne ({username, password})
-if (!dbFindUser) {
+
+const dbFindUser = await User.findOne ({email, password},
+function (err, adventure) {
+  if (err) {
+    // incorrect
+    console.log ('err')
+  } else {
+    console.log ('LOG IN ')
+   // make a  session and make user to logged in
+
+  }
+}
+)
+
+/*
+dbFindUser.then (
+  result => {
+        // первая функция-обработчик - запустится при вызове resolve
+        alert("Fulfilled: " + result); // result - аргумент resolve
+      },
+      error => {
+        // вторая функция - запустится при вызове reject
+        alert("Rejected: " + error); // error - аргумент reject
+      }
+
+)
+*/
+
+if (dbFindUser) {
   // incorrect
-  console.lgo ('incorrect Details')
+  console.log ('incorrect Details')
 } else {
-  console.lgo ('LOG IN ')
- // make session and make user to logged in
+  console.log ('LOG IN ')
+ // make a  session and make user to logged in
 
 }
+
+res.send ('resp')
 /*
 let body = req.body;
 const username = body.username;
