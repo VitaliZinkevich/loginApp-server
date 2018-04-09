@@ -4,6 +4,16 @@ var app = express();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
+var User = require ('./models/users')
+
+const mongoose = require('mongoose');
+mongoose.Promise = Promise
+mongoose.connect ('mongodb://localhost:27017/loginAppDb')
+.then ((err)=>{console.log ('Mongoose UP')})
+
+
+
+/*
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
@@ -22,7 +32,7 @@ MongoClient.connect(url, function(err, client) {
 
   client.close();
 });
-
+*/
 
 var MongoDBStore = require('connect-mongodb-session')(session);
 var ls = require('local-storage');
@@ -79,8 +89,21 @@ app.use(session({
 
 
 
-app.post ('/login', function (req, res) {
+app.post ('/login', async function (req, res) {
 
+
+const {username, password} = req.body
+
+const dbFindUser = await User.findOne ({username, password})
+if (!dbFindUser) {
+  // incorrect
+  console.lgo ('incorrect Details')
+} else {
+  console.lgo ('LOG IN ')
+ // make session and make user to logged in
+
+}
+/*
 let body = req.body;
 const username = body.username;
 const password = body.password;
@@ -108,8 +131,7 @@ const password = body.password;
       }
     })*/
 
-
-
+/*
      res.send ({
      'success': true,
      'mesg':'admin zone'
@@ -126,6 +148,7 @@ const password = body.password;
      'mesg':'only POST or empty data'
      })
  }
+ */
 })
 
 

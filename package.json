@@ -24,6 +24,7 @@
     "local-storage": "^1.4.2",
     "mongod": "^2.0.0",
     "mongodb": "^3.0.5",
+    "mongoose": "^5.0.13",
     "nodemon": "^1.17.2",
     "rxjs": "^5.5.8",
     "session-storage": "^1.0.1"
