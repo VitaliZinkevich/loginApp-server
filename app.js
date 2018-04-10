@@ -4,13 +4,31 @@ var app = express();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-var User = require ('./models/users')
+
+
+
+
 
 var mongoose = require('mongoose');
-mongoose.Promise = Promise
+mongoose.Promise = global.Promise
 mongoose.connect ('mongodb://localhost:27017/loginAppDb')
 .then ((err)=>{console.log ('Mongoose UP')})
 
+var User = require ('./models/users.js');
+
+
+/*
+const UserShema = new mongoose.Schema({
+
+  email: String,
+  password: String,
+  quote: {type: String, default: "GOT NOT QUOTE"}
+
+});
+
+const User = mongoose.model('User', UserShema, 'users')
+console.log (User)
+*/
 
 
 /*
@@ -89,25 +107,86 @@ app.use(session({
 
 
 
-app.post ('/login', async  (req, res) => {
+app.post ('/login', async (req, res) => {
 
 
 const {email, password} = req.body
-console.log (email, password)
 
+const resp = await User.findOne({email, password})
 
-const dbFindUser = await User.findOne ({email, password},
-function (err, adventure) {
-  if (err) {
-    // incorrect
-    console.log ('err')
-  } else {
-    console.log ('LOG IN ')
-   // make a  session and make user to logged in
+if (!resp) {
+  // incorrect
 
-  }
+  res.send ({
+    'success': false,
+    'mesg':'invalied data for admin'
+    })
+} else {
+
+//req.session.email = await User.findOne({email})
+
+const sessionEmail  = await User.findOne({email})
+
+if (sessionEmail) {
+      req.session.user = sessionEmail.email
+} else {
+    console.log ('cant get email for session ')
 }
-)
+
+
+
+
+  res.send ({
+  'success': true,
+  'mesg':'admin zone'
+  })
+ // make a  session and make user to logged in
+
+}
+
+/*
+try {
+  const resp = User.findOne({'email': email}).exec().then (
+    (res)=> console.log(res)
+  )
+
+} catch (err) {
+  console.log ('GOT ERROR')
+  console.log (err)
+}
+*/
+
+//const resp = await User.findOne ({})
+/* выдает ошибку
+try {
+
+  const dbFindUser = await User.findOne ({email})
+
+
+
+} catch (error) {
+  console.log('we got error');
+  console.log(error);
+}
+*/
+
+/*
+dbFindUser.then (function () {
+     console.log("Promise Resolved");
+}).catch(function () {
+     console.log("Promise Rejected");
+})
+*/
+/*
+if (err) {
+  // incorrect
+  console.log ('err')
+} else {
+  console.log ('LOG IN ')
+ // make a  session and make user to logged in
+
+}*/
+
 
 /*
 dbFindUser.then (
@@ -123,16 +202,12 @@ dbFindUser.then (
 )
 */
 
-if (dbFindUser) {
-  // incorrect
-  console.log ('incorrect Details')
-} else {
-  console.log ('LOG IN ')
- // make a  session and make user to logged in
 
-}
-
-res.send ('resp')
+/*
+res.send ({
+'success': true,
+'mesg':'admin zone'
+})*/
 /*
 let body = req.body;
 const username = body.username;
@@ -202,8 +277,9 @@ console.log ('sessionId в куки '+req.cookies.sessionId)
 */
        var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
        var obj1 = {name: 'NOadmin', status: 'success', respond: 'message for not loggedIn'}
+//console.log(req.session.user)
 
-if (req.session.user == 'admin' ){
+if (req.session.user){
 
   res.send (obj)
 } else {
@@ -233,8 +309,8 @@ app.get ('/isLoggedIn', function (req,res){
   })*/
 
 
+//console.log (req.session.user)
 console.log (req.session.user)
-
 if (req.session.user) {
   res.send ({status: true})
 } else {
@@ -248,14 +324,55 @@ app.get('/loggout', function (req, res){
   req.session.destroy(function(err) {
     // cannot access session here
   })
-
-res.send ({success:true})
-
+res.send ({status:true})
 
 })
 
-app.post ('/register', function (req,res){
+app.post ('/register', async function (req,res){
 
-  console.log (req.body)
-  res.send ({success: true})
+const  {email, password, cpassword} = req.body
+
+//console.log(email, password, cpassword)
+
+const existingUser = await User.findOne({email})
+
+
+
+if (existingUser) {
+
+  console.log (existingUser.email)
+
+  res.json ({
+    success: false,
+    message:'Email already in use'
+  })
+
+
+
+} else  {
+
+
+
+
+  const  user = new User({email, password, cpassword})
+  const result  = await user.save()
+
+  const sessionEmail  = await User.findOne({email})
+
+  if (sessionEmail) {
+        req.session.user = sessionEmail.email
+  } else {
+      console.log ('cant get email for session ')
+  }
+
+  res.json ({
+  success: true,
+  message:'You are REGISTRED'
 })
+
+}
+
+
+
+}
+)
