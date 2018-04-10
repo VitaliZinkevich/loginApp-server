@@ -123,8 +123,6 @@ if (!resp) {
     })
 } else {
 
-//req.session.email = await User.findOne({email})
-
 const sessionEmail  = await User.findOne({email})
 
 if (sessionEmail) {
@@ -132,10 +130,16 @@ if (sessionEmail) {
 } else {
     console.log ('cant get email for session ')
 }
+/*
+const infoReq = await User.findOne ({req.session.user})
 
+if (infoReq) {
+console.log (infoReq)
+} else {
+console.log ('NO USER SESIION')
+}
 
-
-
+*/
   res.send ({
   'success': true,
   'mesg':'admin zone'
@@ -257,7 +261,29 @@ const password = body.password;
 })
 
 
-app.get ('/database',function  (req, res) {
+app.get ('/database',async function  (req, res) {
+
+  const email = req.session.user
+
+  const infoReq = await User.findOne ({email})
+
+if (infoReq) {
+  //console.log (infoReq)
+} else {
+  console.log ('NO USER SESIION')
+}
+
+
+   //var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
+   var obj1 = {name: 'NOadmin', status: 'success', respond: 'message for not loggedIn'}
+//console.log(req.session.user)
+
+if (req.session.user){
+
+  res.send (infoReq)
+} else {
+  res.send (obj1)
+}
 
 /*  store.get(req.cookies.sessionId, function (error, session) {
 
@@ -275,23 +301,8 @@ app.get ('/database',function  (req, res) {
 console.log ('куки и сессия РАВЕНСТВО'+(req.session.id ==req.cookies.sessionId))
 console.log ('sessionId в куки '+req.cookies.sessionId)
 */
-       var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
-       var obj1 = {name: 'NOadmin', status: 'success', respond: 'message for not loggedIn'}
-//console.log(req.session.user)
-
-if (req.session.user){
-
-  res.send (obj)
-} else {
-  res.send (obj1)
-}
 
 })
-
-// (e)=>{console.log (e)}
-
-       /*if (ls.get ('id') === req.cookies.id )
-                  {res.send (obj)}*/
 
 
 
@@ -310,7 +321,7 @@ app.get ('/isLoggedIn', function (req,res){
 
 
 //console.log (req.session.user)
-console.log (req.session.user)
+//console.log (req.session.user)
 if (req.session.user) {
   res.send ({status: true})
 } else {
