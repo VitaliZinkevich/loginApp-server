@@ -116,6 +116,47 @@ app.use(session({
 
 
 
+app.put ('/pinvalidationstatus', async function (req, res){
+const email = req.session.user
+
+const updateValidationStatus = await User.findOneAndUpdate({email},{$set: {pinValidation: true}})
+
+if (updateValidationStatus){
+  res.send ({status: true})
+} else {
+
+  console.log ('cannot update validationStatus')
+  res.send ({status: false})
+}
+
+})
+
+
+app.post ('/confirmedPIN', async function (req, res){
+
+  const email = req.session.user
+  console.log ('req session user',req.session.user)
+  const userProfile  = await User.findOne({email})
+
+  if (userProfile) {
+      console.log (userProfile.pin)
+      console.log (userProfile.pinValidation)
+      res.send(userProfile)
+  } else {
+
+    console.log ('user dont find')
+    res.send(false)
+  }
+
+})
+
+
+
+
+
+
+
+
 app.post ('/login', async (req, res) => {
 
 
@@ -347,6 +388,7 @@ res.send ({status:true})
 
 })
 
+
 app.post ('/register', async function (req,res){
 
 const  {email, password, cpassword} = req.body
@@ -377,11 +419,38 @@ if (existingUser) {
         req.session.user = sessionEmail.email
 // отправка почты при регистрации для пина
 
+
+  function generatePin () {
+
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    let tmpPin = ""
+    for (var i =0; i<4; i++){
+      let x = getRandomInt(10)
+      tmpPin += x
+    }
+    //console.log (tmpPin)
+    return tmpPin
+  }
+
+  let pin = generatePin()
+  console.log ('pin')
+  console.log (pin)
+
+  const updatePin = await User.findOneAndUpdate ({email},{$set: {pin: pin}})
+
+  updatePin ? console.log('got one') : console.log('can not update pin')
+
+
+  let link = 'http://localhost:4200/pin'
   let mailOptions = {
           from: 'vitalizinkevich@gmail.com',
-          to: 'vitalizinkevich@yahoo.com',
-          subject: 'Sending Email using Node.js',
-          text: 'That was easy!'
+          to: req.session.user,
+          subject: 'Ваш код подтверждения',
+          html: `<p>Это ключ вашей учетной записи -- ${pin}</p>`+
+                `<p>Cсылка для подтверждения: ${link}</p>`
         };
 /*
 transporter.sendMail(mailOptions, function(error, info){
@@ -391,12 +460,12 @@ transporter.sendMail(mailOptions, function(error, info){
     console.log('Email sent: ' + info.response);
   }
 });
-
+*/
 
   } else {
       console.log ('cant get email for session ')
   }
-*/
+
 
 
   res.json ({
@@ -407,7 +476,7 @@ transporter.sendMail(mailOptions, function(error, info){
 }
 
 }
-})
+)
 
 app.put ('/updateQuote', async function (req, res){
 

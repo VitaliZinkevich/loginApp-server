@@ -4,7 +4,9 @@ const UserShema = new mongoose.Schema({
 
   email: String,
   password: String,
-  quote: {type: String, default: "GOT NOT QUOTE"}
+  quote: {type: String, default: "GOT NOT QUOTE"},
+  pin: {type: String, default: "1111"},
+  pinValidation: {type: Boolean, default: false}
 /*
  name: String,
  email:String,
@@ -13,6 +15,6 @@ const UserShema = new mongoose.Schema({
  */
 });
 
-const User = mongoose.model('User', UserShema, 'users')
+const User = mongoose.model('User', UserShema, 'newusers')
 
 module.exports = User
