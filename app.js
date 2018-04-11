@@ -319,7 +319,6 @@ app.get ('/isLoggedIn', function (req,res){
       }
   })*/
 
-
 //console.log (req.session.user)
 //console.log (req.session.user)
 if (req.session.user) {
@@ -347,8 +346,6 @@ const  {email, password, cpassword} = req.body
 
 const existingUser = await User.findOne({email})
 
-
-
 if (existingUser) {
 
   console.log (existingUser.email)
@@ -361,9 +358,6 @@ if (existingUser) {
 
 
 } else  {
-
-
-
 
   const  user = new User({email, password, cpassword})
   const result  = await user.save()
@@ -383,7 +377,22 @@ if (existingUser) {
 
 }
 
-
-
 }
 )
+
+app.put ('/updateQuote', async function (req, res){
+
+const newQuote = req.body.newQuote
+const email = req.session.user
+
+const updateQ = await User.findOneAndUpdate({email},{$set: {quote: newQuote}})
+
+if (updateQ){
+  res.send ({status: true, message: 'Quote updated to '+  newQuote, quote: newQuote})
+} else {
+
+  console.log ('cannot update')
+  res.send ({status: false, message: 'CANT UPDATE',quote: "" })
+}
+
+})
