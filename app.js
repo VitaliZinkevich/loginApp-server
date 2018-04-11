@@ -4,12 +4,21 @@ var app = express();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
+var nodemailer = require('nodemailer');
 
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'vitalizinkevich',
+    pass: 'kie#xaiB$u1quei'
+  }
+});
 
 
 
 
 var mongoose = require('mongoose');
+
 mongoose.Promise = global.Promise
 mongoose.connect ('mongodb://localhost:27017/loginAppDb')
 .then ((err)=>{console.log ('Mongoose UP')})
@@ -366,9 +375,29 @@ if (existingUser) {
 
   if (sessionEmail) {
         req.session.user = sessionEmail.email
+// отправка почты при регистрации для пина
+
+  let mailOptions = {
+          from: 'vitalizinkevich@gmail.com',
+          to: 'vitalizinkevich@yahoo.com',
+          subject: 'Sending Email using Node.js',
+          text: 'That was easy!'
+        };
+/*
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});
+
+
   } else {
       console.log ('cant get email for session ')
   }
+*/
+
 
   res.json ({
   success: true,
@@ -378,7 +407,7 @@ if (existingUser) {
 }
 
 }
-)
+})
 
 app.put ('/updateQuote', async function (req, res){
 
@@ -388,7 +417,7 @@ const email = req.session.user
 const updateQ = await User.findOneAndUpdate({email},{$set: {quote: newQuote}})
 
 if (updateQ){
-  res.send ({status: true, message: 'Quote updated to '+  newQuote, quote: newQuote})
+  res.send ({status: true, message: 'Quote updated to '+  newQuote, qoute: newQuote})
 } else {
 
   console.log ('cannot update')
