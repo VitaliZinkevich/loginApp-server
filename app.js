@@ -26,41 +26,6 @@ mongoose.connect ('mongodb://localhost:27017/loginAppDb')
 var User = require ('./models/users.js');
 
 
-/*
-const UserShema = new mongoose.Schema({
-
-  email: String,
-  password: String,
-  quote: {type: String, default: "GOT NOT QUOTE"}
-
-});
-
-const User = mongoose.model('User', UserShema, 'users')
-console.log (User)
-*/
-
-
-/*
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-
-// Connection URL
-const url = 'mongodb://localhost:27017';
-
-// Database Name
-const dbName = 'myproject';
-
-// Use connect method to connect to the server
-MongoClient.connect(url, function(err, client) {
-  assert.equal(null, err);
-  console.log("Connected successfully to server");
-
-  const db = client.db(dbName);
-
-  client.close();
-});
-*/
-
 var MongoDBStore = require('connect-mongodb-session')(session);
 var ls = require('local-storage');
 
@@ -108,10 +73,117 @@ app.use(cookieParser())
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  //store: store,
-  saveUninitialized: true,
+  store: store,
+  saveUninitialized: true
 
 }))
+
+
+
+
+/*
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now())
+  console.log (req.session)
+  //console.log ((req.session.user))
+/*
+  if (req.session.user == undefined) {
+
+    store.get(req.cookies.sessionId, function (error, session) {
+
+        if (error) {
+          console.log (error)
+        } else {
+          console.log ('session FROM STORAGE ')
+          console.log ( session )
+
+
+          req.session.user = session.user
+          console.log (req.session.user)
+
+        }
+    })
+
+
+  } else {
+
+
+
+  }
+*/
+/*
+  next()
+})
+*/
+
+app.post ('/restorepassword', async function (req,res){
+  const {email} = req.body
+
+  const oneUser = await User.findOne({email})
+
+  if (oneUser) {
+
+    const userPassword = oneUser.password
+
+    let link = 'http://localhost:4200/pin'
+    let mailOptions = {
+            from: 'vitalizinkevich@gmail.com',
+            to: email,
+            subject: 'Your password',
+            html: `<p>Это пароль вашей учетной записи -- ${userPassword}</p>`+
+                  `<p>Пользователь: ${email}</p>`
+          };
+/*
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+*/
+
+  } else {
+    console.log ('Email do not find')
+  }
+
+res.send({status:true})
+
+})
+
+
+
+
+
+// sessions is working but it accepted only from 1 router - MAIN PAGE
+app.get ('/setsession', async function (req,res) {
+  console.log (req.session.user)
+  if (req.session.user) {
+
+    store.get(req.cookies.sessionId, function (error, session) {
+
+        if (error) {
+          console.log (error)
+        } else {
+          console.log ('session FROM STORAGE ')
+          console.log ( session )
+
+
+          req.session.user = session.user
+          console.log (req.session.user)
+          res.send ({status:true})
+        }
+    })
+
+  } else {
+
+    res.send ({status:false})
+
+  }
+
+})
 
 
 app.get ('/guardvalidation', async function (req, res){
@@ -390,6 +462,7 @@ if (req.session.user){
 /*  store.get(req.cookies.sessionId, function (error, session) {
 
       if (error) {
+
         //console.log (error)
       } else {
         /*
@@ -469,7 +542,32 @@ if (existingUser) {
 
   if (sessionEmail) {
         req.session.user = sessionEmail.email
-// отправка почты при регистрации для пина
+
+// create cookie with STORAGE
+
+let options = {
+maxAge: 1000 * 60 * 10080, // would expire after 1 week
+httpOnly: true // The cookie only accessible by the web server
+}
+
+ let sessionId = req.session.id;
+
+ res.cookie ('sessionId', sessionId.toString(), options)
+
+  console.log (req.cookies.sessionId)
+
+
+
+ store.set(sessionId, req.session, function (error) {
+  if (error) {
+    console.log (error)
+  }
+})
+
+console.log (store)
+
+
+// pin gen and email sending
 
 
   function generatePin () {
@@ -488,8 +586,7 @@ if (existingUser) {
   }
 
   let pin = generatePin()
-  console.log ('pin')
-  console.log (pin)
+
 
   const updatePin = await User.findOneAndUpdate ({email},{$set: {pin: pin}})
 
