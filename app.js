@@ -114,7 +114,34 @@ app.use(session({
 }))
 
 
+app.get ('/guardvalidation', async function (req, res){
 
+const email = req.session.user
+
+const oneUser = await User.findOne ({email})
+
+let wrong = {
+  email: 'wrong',
+  password: 'wrong',
+  quote: 'wrong',
+  pin: 'wrong',
+  pinValidation: false
+}
+console.log (oneUser)
+if (oneUser) {
+
+  res.send (oneUser)
+
+} else {
+
+  console.log ('cant find user for auth guard')
+  res.send (wrong)
+
+}
+
+
+
+})
 
 app.put ('/pinvalidationstatus', async function (req, res){
 const email = req.session.user
@@ -132,23 +159,48 @@ if (updateValidationStatus){
 })
 
 
-app.post ('/confirmedPIN', async function (req, res){
+app.post ('/confirmedPIN' ,async function (req, res){
 
   const email = req.session.user
   console.log ('req session user',req.session.user)
+  console.log (req.body.pin)
+
   const userProfile  = await User.findOne({email})
+  console.log (userProfile)
 
   if (userProfile) {
       console.log (userProfile.pin)
-      console.log (userProfile.pinValidation)
-      res.send(userProfile)
+      console.log (userProfile.pin == req.body.pin)
+
+     if (userProfile.pin == req.body.pin) {
+
+       const updateStatus = await User.findOneAndUpdate ({email},{$set: {pinValidation: true}} )
+       res.send ({status:true})
+     } else {
+
+       console.log ('cant update pin valid status')
+        res.send ({status:false})
+
+      }
+
+      //console.log (userProfile.pin)
+      //console.log (userProfile.pinValidation)
+
   } else {
 
     console.log ('user dont find')
-    res.send(false)
+    res.send({status:false})
   }
 
+
 })
+
+
+
+
+
+
+
 
 
 
