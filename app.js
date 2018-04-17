@@ -639,7 +639,7 @@ if (updateQ){
 } else {
 
   console.log ('cannot update')
-  res.send ({status: false, message: 'CANT UPDATE',quote: "" })
+  res.send ({status: false, message: 'CANT UPDATE', quote: "" })
 }
 
 })

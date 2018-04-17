@@ -6,7 +6,12 @@ const UserShema = new mongoose.Schema({
   password: String,
   quote: {type: String, default: "GOT NOT QUOTE"},
   pin: {type: String, default: "1111"},
-  pinValidation: {type: Boolean, default: false}
+  pinValidation: {type: Boolean, default: false},
+  topScore: {Number, default: 0},
+  totalRows: {Number, default: 0},
+  spendedTime: {Number, default: 0},
+
+
 /*
  name: String,
  email:String,
