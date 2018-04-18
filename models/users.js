@@ -7,9 +7,9 @@ const UserShema = new mongoose.Schema({
   quote: {type: String, default: "GOT NOT QUOTE"},
   pin: {type: String, default: "1111"},
   pinValidation: {type: Boolean, default: false},
-  topScore: {Number, default: 0},
-  totalRows: {Number, default: 0},
-  spendedTime: {Number, default: 0},
+  topScore: {type: Number, default: 0},
+  totalRows: {type: Number, default: 0},
+  spendedTime: {type: Number, default: 0},
 
 
 /*
@@ -20,6 +20,6 @@ const UserShema = new mongoose.Schema({
  */
 });
 
-const User = mongoose.model('User', UserShema, 'newusers')
+const User = mongoose.model('User', UserShema, 'gameusers')
 
 module.exports = User

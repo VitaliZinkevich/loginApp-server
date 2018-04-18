@@ -116,6 +116,83 @@ app.use(function (req, res, next) {
 })
 */
 
+app.put ('/setdataaftergame', async function (req,res) {
+
+const userSessionTopScore = req.body.topScoreToDb
+const lines = req.body.linesCountToDb
+
+if (req.session.user != undefined) {
+
+const email = req.session.user
+
+const findedUserRows = await User.findOneAndUpdate ({email}, { $inc: { totalRows : lines}})
+
+
+if (findedUserRows) {
+
+  if (findedUserRows.topScore > userSessionTopScore ) {
+    res.send ({status: true})
+  } else {
+
+  const findedUserForTopScore = await User.findOneAndUpdate ({email}, { $set: { topScore : userSessionTopScore}})
+
+    if (findedUserForTopScore ) {
+      res.send ({status: true})
+    } else {
+
+    }
+
+  }
+
+
+
+} else {
+
+  console.log ('cant find user to update')
+  res.send ({status: false})
+
+}
+
+
+
+}
+
+
+
+
+
+} )
+
+
+
+app.get ('/setdatabeforegame', async function (req,res) {
+
+if (req.session.user != undefined) {
+  const email = req.session.user
+  const getUser = await User.findOne ({email}, { topScore: 1, totalRows: 1, spendedTime: 1})
+
+if (getUser ) {
+
+  res.send (getUser)
+
+} else {
+
+console.log ('session user dont find')
+
+}
+
+
+
+
+}
+
+//res.send ({status: true})
+
+})
+
+
+
+
 app.post ('/restorepassword', async function (req,res){
   const {email} = req.body
 
@@ -247,6 +324,8 @@ app.post ('/confirmedPIN' ,async function (req, res){
      if (userProfile.pin == req.body.pin) {
 
        const updateStatus = await User.findOneAndUpdate ({email},{$set: {pinValidation: true}} )
+
+
        res.send ({status:true})
      } else {
 
