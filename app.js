@@ -121,11 +121,19 @@ app.put ('/setdataaftergame', async function (req,res) {
 const userSessionTopScore = req.body.topScoreToDb
 const lines = req.body.linesCountToDb
 
+const second = req.body.s
+const minutes = req.body.m
+const hours = req.body.h
+
+console.log(hours, minutes, second)
+
+
+
 if (req.session.user != undefined) {
 
 const email = req.session.user
 
-const findedUserRows = await User.findOneAndUpdate ({email}, { $inc: { totalRows : lines}})
+const findedUserRows = await User.findOneAndUpdate ({email}, { $inc: { totalRows : lines, spendedTime: second+minutes*60+hours*60*60}})
 
 
 if (findedUserRows) {
@@ -518,7 +526,7 @@ app.get ('/database',async function  (req, res) {
 
   const email = req.session.user
 
-  const infoReq = await User.findOne ({email})
+  const infoReq = await User.findOne ({email}, { password: 0, pin: 0 })
 
 if (infoReq) {
   //console.log (infoReq)
