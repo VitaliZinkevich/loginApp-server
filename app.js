@@ -722,11 +722,11 @@ const email = req.session.user
 const updateQ = await User.findOneAndUpdate({email},{$set: {quote: newQuote}})
 
 if (updateQ){
-  res.send ({status: true, message: 'Quote updated to '+  newQuote, qoute: newQuote})
+  res.send ({status: true, message: 'Motto updated to: '+  newQuote, qoute: newQuote})
 } else {
 
   console.log ('cannot update')
-  res.send ({status: false, message: 'CANT UPDATE', quote: "" })
+  res.send ({status: false, message: 'Cant update motto', quote: "" })
 }
 
 })
