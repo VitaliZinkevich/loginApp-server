@@ -115,6 +115,23 @@ app.use(function (req, res, next) {
   next()
 })
 */
+app.get ('/gettopfive', async function (req,res){
+
+const topUsers = await User.find({},{ password: 0, pin: 0, pinValidation: 0 } ).sort({ topScore: -1 })
+
+if (topUsers) {
+
+  console.log (topUsers)
+  res.send(topUsers)
+
+} else {
+  console.log ('cant return top 5')
+}
+
+
+})
+
+
 
 app.put ('/setdataaftergame', async function (req,res) {
 
