@@ -105,8 +105,8 @@ app.use(function (req, res, next) {
 
 
   }
-*/
-/*
+
+
   next()
 })
 */
@@ -173,16 +173,9 @@ if (findedUserRows) {
 
 }
 
-
-
 }
 
-
-
-
-
 } )
-
 
 
 app.get ('/setdatabeforegame', async function (req,res) {
@@ -202,13 +195,10 @@ console.log ('session user dont find')
 }
 
 
-
-
 }
 
 
 })
-
 
 
 
@@ -353,8 +343,7 @@ app.post ('/confirmedPIN' ,async function (req, res){
 
       }
 
-      //console.log (userProfile.pin)
-      //console.log (userProfile.pinValidation)
+
 
   } else {
 
@@ -364,17 +353,6 @@ app.post ('/confirmedPIN' ,async function (req, res){
 
 
 })
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -402,134 +380,14 @@ if (sessionEmail) {
 } else {
     console.log ('cant get email for session ')
 }
-/*
-const infoReq = await User.findOne ({req.session.user})
-
-if (infoReq) {
-console.log (infoReq)
-} else {
-console.log ('NO USER SESIION')
-}
-
-*/
   res.send ({
   'success': true,
   'mesg':'admin zone'
   })
- // make a  session and make user to logged in
+
 
 }
 
-/*
-try {
-  const resp = User.findOne({'email': email}).exec().then (
-    (res)=> console.log(res)
-  )
-
-} catch (err) {
-  console.log ('GOT ERROR')
-  console.log (err)
-}
-*/
-
-//const resp = await User.findOne ({})
-/* выдает ошибку
-try {
-
-  const dbFindUser = await User.findOne ({email})
-
-
-
-} catch (error) {
-  console.log('we got error');
-  console.log(error);
-}
-*/
-
-/*
-dbFindUser.then (function () {
-     console.log("Promise Resolved");
-}).catch(function () {
-     console.log("Promise Rejected");
-})
-*/
-/*
-if (err) {
-  // incorrect
-  console.log ('err')
-} else {
-  console.log ('LOG IN ')
- // make a  session and make user to logged in
-
-}*/
-
-
-/*
-dbFindUser.then (
-  result => {
-        // первая функция-обработчик - запустится при вызове resolve
-        alert("Fulfilled: " + result); // result - аргумент resolve
-      },
-      error => {
-        // вторая функция - запустится при вызове reject
-        alert("Rejected: " + error); // error - аргумент reject
-      }
-
-)
-*/
-
-
-/*
-res.send ({
-'success': true,
-'mesg':'admin zone'
-})*/
-/*
-let body = req.body;
-const username = body.username;
-const password = body.password;
-
- if ((username && password) && req.method === 'POST') {
-   if (username === 'admin' && password === 'admin') {
-
-    let options = {
-    maxAge: 1000 * 60 * 1, // would expire after 15 minutes
-    httpOnly: true // The cookie only accessible by the web server
-    //signed: true // Indicates if the cookie should be signed
-}
-
-     let sessionId = req.session.id;
-
-     //res.cookie ('sessionId', sessionId.toString(), options)
-      //ls.set ('id', cookiesId.toString())
-      //console.log (req.session.id)
-
-      req.session.user = 'admin'
-
-  /*  store.set(sessionId, req.session, function (error) {
-      if (error) {
-        console.log (error)
-      }
-    })*/
-
-/*
-     res.send ({
-     'success': true,
-     'mesg':'admin zone'
-     })
-     } else  {
-       res.send ({
-         'success': false,
-         'mesg':'invalied data for admin'
-         })
-     }
- } else {
-   res.send ({
-     'success': false,
-     'mesg':'only POST or empty data'
-     })
- }
- */
 })
 
 
@@ -540,15 +398,13 @@ app.get ('/database',async function  (req, res) {
   const infoReq = await User.findOne ({email}, { password: 0, pin: 0 })
 
 if (infoReq) {
-  //console.log (infoReq)
+
 } else {
   console.log ('NO USER SESIION')
 }
 
-
-   //var obj = {name: 'admin', status: 'success', respond: 'message for admin only'}
    var obj1 = {name: 'NOadmin', status: 'success', respond: 'message for not loggedIn'}
-//console.log(req.session.user)
+
 
 if (req.session.user){
 
@@ -592,8 +448,7 @@ app.get ('/isLoggedIn', function (req,res){
       }
   })*/
 
-//console.log (req.session.user)
-//console.log (req.session.user)
+
 if (req.session.user) {
   res.send ({status: true})
 } else {
@@ -605,7 +460,7 @@ if (req.session.user) {
 app.get('/loggout', function (req, res){
 
   req.session.destroy(function(err) {
-    // cannot access session here
+
   })
 res.send ({status:true})
 
@@ -616,7 +471,7 @@ app.post ('/register', async function (req,res){
 
 const  {email, password, cpassword} = req.body
 
-//console.log(email, password, cpassword)
+
 
 const existingUser = await User.findOne({email})
 
@@ -641,7 +496,6 @@ if (existingUser) {
   if (sessionEmail) {
         req.session.user = sessionEmail.email
 
-// create cookie with STORAGE
 
 let options = {
 maxAge: 1000 * 60 * 10080, // would expire after 1 week
