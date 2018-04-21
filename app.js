@@ -10,7 +10,7 @@ var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'vitalizinkevich',
-    pass: 'kie#xaiB$u1quei'
+    pass: '123456789'
   }
 });
 
@@ -36,8 +36,6 @@ var store = new MongoDBStore(
         collection: 'mySessions'
       });
 
- // Catch errors
- // БЫЛА ТУТ ОШИБКА ПРИ СОЗДАНИИ
 
  store.on('error', function(error) {
        assert.ifError(error);
@@ -46,14 +44,13 @@ var store = new MongoDBStore(
 
 
 
-// DELETE var jsonfile = require('jsonfile')
-var cookie = require('cookie'); // what cookies are actuallu works here
+
+var cookie = require('cookie');
 
 var cookieParser = require('cookie-parser');
 
-//let crypto = require('crypto'); DELETE
 
-//var Storage = require('session-storage').create ('file', {where:'./sess_storage.json',secureKey:'secureKey'})
+
 
 
 var Rx = require('rxjs/Rx');
@@ -61,7 +58,7 @@ var faker = require('faker');
 
 app.listen(3000, ()=>console.log('listen on 3000'));
 
-//console.log (faker.name.findName());
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -77,8 +74,6 @@ app.use(session({
   saveUninitialized: true
 
 }))
-
-
 
 
 /*
@@ -211,7 +206,6 @@ console.log ('session user dont find')
 
 }
 
-//res.send ({status: true})
 
 })
 
